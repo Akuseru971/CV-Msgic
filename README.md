@@ -5,9 +5,9 @@ SaaS frontend React pour générer un CV adaptatif à partir d'un CV de base + u
 ## Stack
 
 - Frontend: React + Vite
-- Backend: Node.js + Express
+- Backend: Vercel Serverless Functions (`/api/*`)
 - Paiement: Stripe Checkout
-- Persistance crédits: fichier local `data/store.json`
+- Persistance crédits: Upstash Redis (fallback mémoire en local)
 
 ## Configuration
 
@@ -41,9 +41,7 @@ npm install
 npm run dev
 ```
 
-Cela démarre:
-- client sur `http://localhost:5173`
-- API sur `http://localhost:8787`
+Cela lance `vercel dev` avec frontend + API serverless sur le même host local.
 
 3. Build de production :
 
@@ -73,4 +71,13 @@ npm run build
 ## Notes prod
 
 - Le backend appelle Anthropic côté serveur (clé jamais exposée au navigateur).
+- Le fallback mémoire n'est pas persistant entre invocations serverless. En production, configure Upstash Redis.
 - Pour une prod complète, ajoute une vraie authentification (GitHub OAuth/session) et remplace le `userId` local par l'utilisateur authentifié.
+
+## Déploiement Vercel
+
+1. Importer le repo GitHub dans Vercel.
+2. Vérifier que la branche de production est `main`.
+3. Ajouter les variables d'environnement du `.env.example` dans Project Settings > Environment Variables.
+4. Connecter une intégration Redis (Upstash) au projet pour la persistance des crédits.
+5. Déployer.
